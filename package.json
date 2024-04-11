@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "wrtc": "^0.4.7"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "obyoy-meet-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
