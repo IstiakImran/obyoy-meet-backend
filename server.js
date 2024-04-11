@@ -9,7 +9,7 @@ const { RTCPeerConnection, RTCSessionDescription } = pkgs;
 
 const app = express();
 const http = createServer(app);
-const io = new Server(http, { cors: { origin: "*" } });
+const io = new Server(http, { cors: { origin: ["http://localhost:5173", "https://obyoymeet.vercel.app", "https://obyoymeet.vercel.app/broadcast", "https://obyoymeet.vercel.app/consumer"],} });
 
 let senderStream;
 
