@@ -17,8 +17,7 @@ let senderStream;
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173' // Only allow this origin to access the API
-  }));
+    origin: ['http://localhost:5173' ,'https://obyoymeet.vercel.app/'] }));
 
 app.post("/consumer", async (req, res) => {
     const peer = new RTCPeerConnection({
