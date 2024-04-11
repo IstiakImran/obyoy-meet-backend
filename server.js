@@ -17,7 +17,7 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://obyoymeet.vercel.app/"],
+    origin: ["http://localhost:5173", "https://obyoymeet.vercel.app", "https://obyoymeet.vercel.app/broadcast", "https://obyoymeet.vercel.app/consumer"],
   })
 );
 
