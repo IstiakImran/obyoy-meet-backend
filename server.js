@@ -29,7 +29,9 @@ app.post("/consumer", async (req, res) => {
     });
     const desc = new RTCSessionDescription(req.body.sdp);
     await peer.setRemoteDescription(desc);
-    senderStream.getTracks().forEach(track => peer.addTrack(track, senderStream));
+    if (senderStream) {
+        senderStream.getTracks().forEach(track => peer.addTrack(track, senderStream));
+    }
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);
     const payload = {
