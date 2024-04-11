@@ -22,72 +22,81 @@ app.use(
 );
 
 app.post("/consumer", async (req, res) => {
-  const peer = new RTCPeerConnection({
-    iceServers: [
-      {
-        urls: "stun:stun.stunprotocol.org",
-      },
-      {
-        urls: "stun:stun.ekiga.net",
-      },
-      {
-        urls: "stun:stun.l.google.com:19302",
-      },
-
-      {
-        urls: "stun:stun.sipgate.net",
-      },
-    ],
-  });
-  const desc = new RTCSessionDescription(req.body.sdp);
-  await peer.setRemoteDescription(desc);
-  if (senderStream) {
-    senderStream
-      .getTracks()
-      .forEach((track) => peer.addTrack(track, senderStream));
+  try {
+    const peer = new RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "stun:stun.stunprotocol.org",
+          },
+          {
+            urls: "stun:stun.ekiga.net",
+          },
+          {
+            urls: "stun:stun.l.google.com:19302",
+          },
+    
+          {
+            urls: "stun:stun.sipgate.net",
+          },
+        ],
+      });
+      const desc = new RTCSessionDescription(req.body.sdp);
+      await peer.setRemoteDescription(desc);
+      if (senderStream) {
+        senderStream
+          .getTracks()
+          .forEach((track) => peer.addTrack(track, senderStream));
+      }
+      const answer = await peer.createAnswer();
+      await peer.setLocalDescription(answer);
+      const payload = {
+        sdp: peer.localDescription,
+      };
+      console.log('anser');
+      res.json(payload);
+  } catch (error) {
+    console.log(error);
   }
-  const answer = await peer.createAnswer();
-  await peer.setLocalDescription(answer);
-  const payload = {
-    sdp: peer.localDescription,
-  };
-  console.log('anser');
-  res.json(payload);
 });
 
 app.post("/broadcast", async (req, res) => {
-  const peer = new RTCPeerConnection({
-    iceServers: [
-      {
-        urls: "stun:stun.stunprotocol.org",
-      },
-      {
-        urls: "stun:stun.ekiga.net",
-      },
-      {
-        urls: "stun:stun.l.google.com:19302",
-      },
-
-      {
-        urls: "stun:stun.sipgate.net",
-      },
-    ],
+    try {
+        const peer = new RTCPeerConnection({
+            iceServers: [
+              {
+                urls: "stun:stun.stunprotocol.org",
+              },
+              {
+                urls: "stun:stun.ekiga.net",
+              },
+              {
+                urls: "stun:stun.l.google.com:19302",
+              },
+        
+              {
+                urls: "stun:stun.sipgate.net",
+              },
+            ],
+          });
+        
+          peer.ontrack = (e) => handleTrackEvent(e, peer);
+        
+          const desc = new RTCSessionDescription(req.body.sdp);
+          await peer.setRemoteDescription(desc);
+        
+          const answer = await peer.createAnswer();
+          await peer.setLocalDescription(answer);
+        
+          const payload = {
+            sdp: peer.localDescription,
+          };
+          console.log('call-s');
+          res.json(payload);
+        
+    } catch (error) {
+        console.log(error);
+    }
   });
-
-  peer.ontrack = (e) => handleTrackEvent(e, peer);
-
-  const desc = new RTCSessionDescription(req.body.sdp);
-  await peer.setRemoteDescription(desc);
-
-  const answer = await peer.createAnswer();
-  await peer.setLocalDescription(answer);
-
-  const payload = {
-    sdp: peer.localDescription,
-  };
-  console.log('call');
-  res.json(payload);
-});
 
 function handleTrackEvent(e, peer) {
   senderStream = e.streams[0];
